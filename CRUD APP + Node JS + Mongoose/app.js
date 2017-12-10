@@ -81,9 +81,49 @@ app.get('/articles/:id', function(req, res){
     })
 })
 
+//Load edit form
+app.get('/articles/edit/:id', function(req, res){
+    Article.findById(req.params.id, function(err, article){
+        res.render('edit-articles',{
+            title: "Edit Article",
+            article: article
+        })
+    })
+})
 
-app.listen('3000', function(){
+//Submit edit form
+app.post('/articles/edit/:id', function(req, res){
+    let article = {};
+    article.title = req.body.title;
+    article.author = req.body.author;
+    article.body = req.body.body;
+
+    let query = {_id:req.params.id};
+
+    Article.update(query, article, function(err){
+        if(err){
+            console.log(err);
+            return;
+        }else{
+            res.redirect('/');
+        }
+    })
+
+})
+
+//Delete route
+app.delete('/articles/:id', function(req, res){
+    let query = {_id:req.params.id}
+
+    Article.remove(query, function(err){
+        if(err){
+            console.log(err);
+        }
+        res.send('Success');
+    });
+});
+
+
+app.listen('1338', function(){
     console.log('Server started....');
-	console.log('Server started....');
-	console.log('Gilang Aditya R');
 });
