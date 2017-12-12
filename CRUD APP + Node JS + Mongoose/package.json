@@ -4,8 +4,11 @@
   "description": "CRUD Application",
   "main": "app.js",
   "dependencies": {
+    "connect-flash": "^0.1.1",
     "express": "^4.16.2",
+    "express-messages": "^1.0.1",
     "express-session": "^1.15.6",
+    "express-validator": "^4.3.0",
     "mongodb": "^2.2.33",
     "mongoose": "^4.10.8",
     "nodemon": "^1.12.4",

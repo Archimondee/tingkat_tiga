@@ -2,6 +2,9 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const expressValidator = require('express-validator');
+//const flash = require('connect-flash');
+const session = require('express-session');
 
 //Connect to mongodb
 mongoose.connect('mongodb://localhost/blog');
@@ -33,6 +36,38 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+//Express session middleware
+app.use(session({
+    secret : 'uawye78awdalbidts786123&*)*()*',
+    resave: true,
+    saveUninitialized: true
+}));
+
+//Express messages middleware
+app.use(require('connect-flash')());
+app.use(function (req, res, next) {
+  res.locals.messages = require('express-messages')(req, res);
+  next();
+});
+
+//Express validator middleware
+app.use(expressValidator({
+    errorFormatter: function(param, msg, value) {
+        var namespace = param.split('.')
+        , root    = namespace.shift()
+        , formParam = root;
+  
+      while(namespace.length) {
+        formParam += '[' + namespace.shift() + ']';
+      }
+      return {
+        param : formParam,
+        msg   : msg,
+        value : value
+      };
+    }
+  }));
+
 //Home router
 app.get('/', function(req, res){
     Article.find({}, function(err, articles){
@@ -47,83 +82,10 @@ app.get('/', function(req, res){
     });
 });
 
-//Add Router
-app.get('/articles/add', function(req, res){
-    res.render('add-articles',{
-        title: 'Add Articles'
-    });
-});
-app.post('/articles/add', function(req, res){
-    let article = new Article();
-    article.title = req.body.title;
-    article.author = req.body.author;
-    article.body = req.body.body;
+//Route articles
+let articles = require('./routes/articles');
+app.use('/articles', articles); 
 
-    article.save(function(err){
-        if(err){
-            console.log(err);
-        }else{
-            res.redirect('/');
-        }
-    })
-})
-
-//fetch article post
-app.get('/articles/:id', function(req, res){
-    Article.findById(req.params.id, function(err, article){
-        if(err){
-            console.log(err);
-        }else{
-            res.render('article',{
-                article:article
-            })
-        }
-    })
-})
-
-//Load edit form
-app.get('/articles/edit/:id', function(req, res){
-    Article.findById(req.params.id, function(err, article){
-        res.render('edit-articles',{
-            title: "Edit Article",
-            article: article
-        })
-    })
-})
-
-//Submit edit form
-app.post('/articles/edit/:id', function(req, res){
-    let article = {};
-    article.title = req.body.title;
-    article.author = req.body.author;
-    article.body = req.body.body;
-
-    let query = {_id:req.params.id};
-
-    Article.update(query, article, function(err){
-        if(err){
-            console.log(err);
-            return;
-        }else{
-            res.redirect('/');
-        }
-    })
-
-})
-
-//Delete route
-app.delete('/articles/:id', function(req, res){
-    let query = {_id:req.params.id}
-
-    Article.remove(query, function(err){
-        if(err){
-            console.log(err);
-        }
-        res.send('Success');
-    });
-});
-
-
-app.listen('1338', function(){
+app.listen('420', function(){
     console.log('Server started....');
 });
