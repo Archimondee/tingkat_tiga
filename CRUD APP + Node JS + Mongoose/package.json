@@ -4,6 +4,7 @@
   "description": "CRUD Application",
   "main": "app.js",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "connect-flash": "^0.1.1",
     "express": "^4.16.2",
     "express-messages": "^1.0.1",
@@ -12,6 +13,8 @@
     "mongodb": "^2.2.33",
     "mongoose": "^4.10.8",
     "nodemon": "^1.12.4",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
     "pug": "^2.0.0-rc.4"
   },
   "devDependencies": {},

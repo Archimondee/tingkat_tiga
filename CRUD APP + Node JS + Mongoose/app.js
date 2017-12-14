@@ -5,9 +5,11 @@ const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 //const flash = require('connect-flash');
 const session = require('express-session');
+const config = require('./config/database');
+const passport = require('passport')
 
 //Connect to mongodb
-mongoose.connect('mongodb://localhost/blog');
+mongoose.connect(config.database);
 let db = mongoose.connection;
 
 //checking connection
@@ -38,7 +40,7 @@ app.set('view engine', 'pug');
 
 //Express session middleware
 app.use(session({
-    secret : 'uawye78awdalbidts786123&*)*()*',
+    secret : 'BLA BLA BLA',
     resave: true,
     saveUninitialized: true
 }));
@@ -68,6 +70,22 @@ app.use(expressValidator({
     }
   }));
 
+ 
+
+// Passport Config
+require('./config/passport')(passport);
+
+//Passport Middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
+//Global user variable
+app.get('*', function(req, res, next){
+    res.locals.user = req.user || null;
+    console.log(req.user);
+    next();
+ });
+
 //Home router
 app.get('/', function(req, res){
     Article.find({}, function(err, articles){
@@ -84,8 +102,10 @@ app.get('/', function(req, res){
 
 //Route articles
 let articles = require('./routes/articles');
+let users = require('./routes/users');
 app.use('/articles', articles); 
+app.use('/user', users);
 
-app.listen('420', function(){
+app.listen('9111', function(){
     console.log('Server started....');
 });

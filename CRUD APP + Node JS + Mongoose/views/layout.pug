@@ -21,6 +21,16 @@ html
                         li
                             a(href='/articles/add') Add Articles
 
+                    ul.nav.navbar-nav.navbar-right
+                        if user
+                            li 
+                                a(href='/user/logout') Logout
+                        else
+                            li
+                                a(href='/user/register') Register
+                            li
+                                a(href='/user/login') Login
+
         .container
             != messages('message', locals)
             if errors
