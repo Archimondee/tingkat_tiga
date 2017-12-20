@@ -82,7 +82,6 @@ app.use(passport.session());
 //Global user variable
 app.get('*', function(req, res, next){
     res.locals.user = req.user || null;
-    console.log(req.user);
     next();
  });
 
@@ -106,6 +105,6 @@ let users = require('./routes/users');
 app.use('/articles', articles); 
 app.use('/user', users);
 
-app.listen('9111', function(){
+app.listen('567', function(){
     console.log('Server started....');
 });
